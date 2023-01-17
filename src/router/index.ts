@@ -8,34 +8,45 @@ export const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'dashboard',
       component: DashboardView,
       meta: { requiresAuth: true },
     },
-    /* {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+    {
+      path: '/quiz-easy',
+      name: 'quiz-easy',
+      component: () => import('@/views/Quiz.vue'),
+      props: { difficulty: 'easy' },
       meta: { requiresAuth: true },
-    }, */
+    },
+    {
+      path: '/quiz-medium',
+      name: 'quiz-medium',
+      component: () => import('@/views/Quiz.vue'),
+      props: { difficulty: 'medium' },
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/quiz-hard',
+      name: 'quiz-hard',
+      component: () => import('@/views/Quiz.vue'),
+      props: { difficulty: 'hard' },
+      meta: { requiresAuth: true },
+    },
     {
       path: '/login',
       name: 'login',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: LoginView,
     },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
+  linkActiveClass: 'bg-gray-900 text-white',
 })
 
 router.beforeEach((to, from, next) => {
   const user = useUserStore()
 
-  if (to.meta.requiresAuth && !user.isLoggedIn) return '/login'
+  if (to.meta.requiresAuth && to.name !== 'Login' && !user.isLoggedIn)
+    next({ name: 'login' })
   else next()
 })

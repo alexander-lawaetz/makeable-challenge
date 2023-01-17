@@ -40,17 +40,6 @@
             />
           </div>
         </div>
-
-        <div class="flex items-center justify-end">
-          <div class="text-sm">
-            <a
-              href="#"
-              class="font-medium text-indigo-600 hover:text-indigo-500"
-              >Forgot your login?</a
-            >
-          </div>
-        </div>
-
         <div>
           <button
             type="submit"
@@ -83,7 +72,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { router } from '@/router'
 
 export default defineComponent({
   setup() {
@@ -99,9 +87,6 @@ export default defineComponent({
   methods: {
     login() {
       this.userStore.login(this.username, this.password)
-    },
-    forgotCredentials() {
-      router.push('forgot-credentials')
     },
   },
 })

@@ -1,23 +1,27 @@
 import { defineStore } from 'pinia'
-import demoData from '@/data/demoUser.json'
 import { router } from '@/router'
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
-      user: JSON.parse(localStorage.getItem('user') || '[]') as UserInfo | null,
+      user: JSON.parse(
+        localStorage.getItem('user') || 'null'
+      ) as UserInfo | null,
     }
   },
 
   actions: {
-    login(username: string, password: string) {
+    async login(username: string, password: string) {
       try {
-        if (username !== demoData.username && password !== demoData.password)
-          throw new Error(
-            'Username and Password did not match the Demo credintials'
-          )
+        const requestToken: OpentdbRequestToken = await fetch(
+          'https://opentdb.com/api_token.php?command=request'
+        ).then((response) => response.json())
 
-        const user = demoData
+        const user = {
+          username,
+          password,
+          token: requestToken.token,
+        }
 
         this.user = user
 
@@ -36,12 +40,20 @@ export const useUserStore = defineStore('user', {
   },
 
   getters: {
-    isLoggedIn: (state) => !!state.user,
+    isLoggedIn(state): boolean {
+      return !!state.user
+    },
   },
 })
 
 interface UserInfo {
-  id: number
   username: string
   password: string
+  token: string
+}
+
+interface OpentdbRequestToken {
+  response_code: number
+  response_message: string
+  token: string
 }
